@@ -19,6 +19,7 @@ func CreateTCPSender(conn *net.TCPConn) *TCPSender {
 	if sender == nil {
 		return nil
 	}
+
 	return sender
 }
 

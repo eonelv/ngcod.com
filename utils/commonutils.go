@@ -2,10 +2,9 @@
 package utils
 
 import (
+	"crypto/md5"
 	"fmt"
 	"io/ioutil"
-
-	"crypto/md5"
 )
 
 func MD5(pData []byte) string {
@@ -28,5 +27,6 @@ func CalcFileMD5(filePath string) string {
 		return ""
 	}
 	md5 := md5.Sum(bytes)
-	return fmt.Sprintf("%x", md5)
+	md5Str := fmt.Sprintf("%x", md5)
+	return md5Str
 }
