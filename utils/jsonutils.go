@@ -42,10 +42,40 @@ func GetInt(Data map[string]interface{}, Key string) int64 {
 	return 0
 }
 
+func GetBool(Data map[string]interface{}, Key string) bool {
+	TempStr, ok := Data[Key]
+	if !ok {
+		return false
+	}
+	sValue, ok := TempStr.(bool)
+	if ok {
+		return sValue
+	}
+	return false
+}
+
 func GetString(Data map[string]interface{}, Key string) string {
 	TempStr, ok := Data[Key]
 	if !ok {
 		return ""
 	}
 	return TempStr.(string)
+}
+
+func GetTableString(Data map[string]interface{}, Key string, SubKey string) string {
+	TempTable, ok := Data[Key]
+	if !ok {
+		return ""
+	}
+	TempJson := TempTable.(map[string]interface{})
+	return GetString(TempJson, SubKey)
+}
+
+func GetTableBool(Data map[string]interface{}, Key string, SubKey string) bool {
+	TempTable, ok := Data[Key]
+	if !ok {
+		return false
+	}
+	TempJson := TempTable.(map[string]interface{})
+	return GetBool(TempJson, SubKey)
 }

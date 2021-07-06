@@ -5,9 +5,14 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
+
+	"bytes"
+
+	"github.com/axgle/mahonia"
 
 	. "ngcod.com/core"
 )
@@ -91,7 +96,7 @@ func Exec(cmdStr string, args ...string) error {
 		testString += " "
 		testString += a
 	}
-	fmt.Println(testString)
+	//fmt.Println(testString)
 
 	err := Exe_Cmd(cmdStr, true, args...)
 	return err
@@ -126,12 +131,19 @@ func Exe_Cmd(cmdStr string, isLogInfo bool, args ...string) error {
 		return err
 	}
 	defer stdErrorPipe.Close()
-
 	go func() {
 		scanner := bufio.NewScanner(stdoutPipe)
+		iconv := mahonia.NewDecoder("GBK")
 		i := 0
 		for scanner.Scan() { //命令在执行的过程中, 实时地获取其输出
-			line := string(scanner.Bytes())
+
+			var outerr bytes.Buffer
+			outerr.Write(scanner.Bytes())
+
+			readedData := iconv.NewReader(&outerr)
+			result, _ := ioutil.ReadAll(readedData)
+			line := string(result)
+
 			if isLogInfo {
 				LogInfo(line)
 				continue
@@ -149,14 +161,23 @@ func Exe_Cmd(cmdStr string, isLogInfo bool, args ...string) error {
 
 	go func() {
 		scanner := bufio.NewScanner(stdErrorPipe)
+
+		iconv := mahonia.NewDecoder("GBK")
+
 		for scanner.Scan() { // 命令在执行的过程中, 实时地获取其输出
-			LogError(string(scanner.Bytes()))
+			var outerr bytes.Buffer
+			outerr.Write(scanner.Bytes())
+
+			readedData := iconv.NewReader(&outerr)
+			result, _ := ioutil.ReadAll(readedData)
+			LogError(string(result))
 		}
 	}()
 
 	if err := cmd.Run(); err != nil {
-		LogDebug("Run ext process error:", err)
+		LogDebug("Run ext process error:", err, cmd.Args)
 		//panic(err)
+		return err
 	}
 	return err
 }
