@@ -88,7 +88,7 @@ func CopyFile(SrcFile string, DestFile string) error {
 	return err
 }
 
-func Exec(cmdStr string, args ...string) error {
+func ExecByCharset(charset string, cmdStr string, args ...string) error {
 
 	var testString string = cmdStr
 
@@ -98,11 +98,25 @@ func Exec(cmdStr string, args ...string) error {
 	}
 	//fmt.Println(testString)
 
-	err := Exe_Cmd(cmdStr, true, args...)
+	err := exe_Cmd(charset, cmdStr, true, args...)
 	return err
 }
 
-func Exe_Cmd(cmdStr string, isLogInfo bool, args ...string) error {
+func Exec(cmdStr string, isLogInfo bool, args ...string) error {
+
+	var testString string = cmdStr
+
+	for _, a := range args {
+		testString += " "
+		testString += a
+	}
+	//fmt.Println(testString)
+
+	err := exe_Cmd("UTF-8", cmdStr, isLogInfo, args...)
+	return err
+}
+
+func exe_Cmd(charset string, cmdStr string, isLogInfo bool, args ...string) error {
 
 	var testString string = cmdStr
 
@@ -133,7 +147,7 @@ func Exe_Cmd(cmdStr string, isLogInfo bool, args ...string) error {
 	defer stdErrorPipe.Close()
 	go func() {
 		scanner := bufio.NewScanner(stdoutPipe)
-		iconv := mahonia.NewDecoder("GBK")
+		iconv := mahonia.NewDecoder(charset)
 		i := 0
 		for scanner.Scan() { //命令在执行的过程中, 实时地获取其输出
 
@@ -162,7 +176,7 @@ func Exe_Cmd(cmdStr string, isLogInfo bool, args ...string) error {
 	go func() {
 		scanner := bufio.NewScanner(stdErrorPipe)
 
-		iconv := mahonia.NewDecoder("GBK")
+		iconv := mahonia.NewDecoder(charset)
 
 		for scanner.Scan() { // 命令在执行的过程中, 实时地获取其输出
 			var outerr bytes.Buffer
