@@ -8,6 +8,12 @@ import (
 	"runtime"
 )
 
+//将Struct转换为bytes
+//@param reflect.Value 实例化之后的Struct
+//
+//eg:
+//header := &PackHeader{TAG, VERSION, length, cmd}
+//headerDatas, okh := Struct2Bytes(reflect.ValueOf(header))
 func Struct2Bytes(this reflect.Value) ([]byte, bool) {
 	binData := bytes.NewBuffer([]byte{})
 	v := this.Elem()
@@ -53,6 +59,13 @@ func Struct2Bytes(this reflect.Value) ([]byte, bool) {
 	return binData.Bytes(), true
 }
 
+//将bytes复制到Struct中
+//@param reflect.Value 实例化之后的Struct
+//@param bytes 二进制数据
+//
+//eg:
+//s := &SStruct{}
+//Byte2Struct(reflect.ValueOf(s), bytes)
 func Byte2Struct(dataType reflect.Value, bytes1 []byte) (bool, int) {
 	v := dataType.Elem()
 	index := 0

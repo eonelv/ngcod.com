@@ -23,6 +23,11 @@ type BaseMultiThreadTask struct {
 	wGFile *sync.WaitGroup
 }
 
+//启动MultiThreadTask. 实现该接口，让struct继承自BaseMultiThreadTask.
+//实现接口函数CreateChan、CloseChan、WriteToChannel、ProcessTask
+//@param1 task MultiThreadTask
+//@param2 SrcFileDir 源文件目录
+//@param3 DestFileDir 目标目录
 func ExecTask(task MultiThreadTask, SrcFileDir string, DestFileDir string) {
 	task.CreateChan()
 	defer task.CloseChan()

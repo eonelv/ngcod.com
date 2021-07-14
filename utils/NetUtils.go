@@ -14,6 +14,7 @@ var AllowMacAddress = map[string]uint8{
 	"A8-5E-45-30-ED-1A": 1, //LV
 	"24-F6-77-0D-1C-44": 1, //LV-Mac
 	"18-C0-4D-06-65-4D": 1, //192.168.1.159
+	"D8-5E-D3-04-EF-48": 1, //192.168.1.217
 }
 
 func GetLocalIP() (ipv4 string, err error) {

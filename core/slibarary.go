@@ -1,7 +1,7 @@
 // slibarary
 package core
 
-type MKeyValue struct {
+type SKeyValue struct {
 	Key   string
 	Value string
 }
